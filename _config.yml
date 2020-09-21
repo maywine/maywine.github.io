@@ -3,18 +3,18 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: maywine's Blog
-subtitle: ''
-description: '杂记'
+title: gfheng's 杂记
+subtitle: '「Stay hungry. Stay foolish.」'
+description: 'C/C++'
 keywords:
-author: maywine
+author: gfheng
 language: zh-CN
 timezone: ''
-avatar: /uploads/avatar.jpg
+avatar: /blog/uploads/avatar.jpg
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: https://maywine.top:5003
+url: https://maywine.top:5002
 root: /blog/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
