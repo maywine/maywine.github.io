@@ -1,0 +1,10 @@
+# config
+cover: /blog/uploads/cover.jpg
+logo: /blog/uploads/avatar.jpg
+bio: ''
+
+# Content
+excerpt_link: Read More
+
+# Miscellaneous
+rss:
