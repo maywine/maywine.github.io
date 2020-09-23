@@ -1,10 +1,10 @@
 # config
 cover: /blog/uploads/cover.jpg
 logo: /blog/uploads/avatar.jpg
-bio: ''
+bio: 'maplewine@outlook.com'
 
 # Content
 excerpt_link: Read More
 
 # Miscellaneous
-rss:
+#rss:
