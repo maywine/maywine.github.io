@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>树莓派4个人网盘搭建 | gfheng&#39;s 杂记</title>
+  <meta name="description" content="「Stay hungry. Stay foolish.」" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/blog/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="gfheng's 杂记">
+
+  
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(/blog/uploads/cover.jpg)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/blog/"><img src="/blog/uploads/avatar.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">gfheng's 杂记</h1>
+            <h2 class="blog-description">「Stay hungry. Stay foolish.」</h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2021-06-07T03:41:47.643Z" itemprop="datePublished">
+          2021-06-07
+      </time>
+    
+</span>
+    <h1 class="post-title">树莓派4个人网盘搭建</h1>
+    <section class="post-content">
+      <ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</a></li>
+<li><a href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">前期准备工作</a><ul>
+<li><a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E8%B4%AD%E4%B9%B0">树莓派购买</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E6%A0%91%E8%8E%93%E6%B4%BE%E9%95%9C%E5%83%8F">下载树莓派镜像</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E6%A0%91%E8%8E%93%E6%B4%BE%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5">配置树莓派网络连接</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8%E6%A0%91%E8%8E%93%E6%B4%BE">启动树莓派</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%9F%E5%90%8D%E8%B4%AD%E4%B9%B0">域名购买</a></li>
+<li><a href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90">域名解析</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7">创建服务账户</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E8%AF%81%E4%B9%A6">配置证书</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%AF%81%E4%B9%A6%E6%96%87%E4%BB%B6%E5%A4%B9">创建证书文件夹</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E8%87%AA%E5%8A%A8%E7%AE%A1%E7%90%86-CA-%E8%AF%81%E4%B9%A6%E8%84%9A%E6%9C%AC">安装自动管理 CA 证书脚本</a> </li>
+<li><a href="#%E4%BD%BF%E7%94%A8-DNSPod-API-%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6">使用 DNSPod API 申请证书</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6">安装证书</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9%E6%9D%83%E9%99%90">修改权限</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98">挂载移动硬盘</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE-aria2">配置 aria2</a><ul>
+<li><a href="#aria2-%E7%AE%80%E4%BB%8B">aria2 简介</a></li>
+<li><a href="#aria2-%E5%AE%89%E8%A3%85">aria2 安装</a></li>
+<li><a href="#aria2-%E9%85%8D%E7%BD%AE">aria2 配置</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE-aria2-%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8">设置 aria2 开机启动</a></li>
+</ul>
+</li>
+<li><a href="#%E9%85%8D%E7%BD%AE-nginx">配置 nginx</a><ul>
+<li><a href="#%E6%B7%BB%E5%8A%A0-nginx-%E6%9C%8D%E5%8A%A1%E7%94%A8%E6%88%B7%E5%88%B0-certusers">添加 nginx 服务用户到 certusers</a></li>
+<li><a href="#%E5%85%B3%E9%97%AD%E9%BB%98%E8%AE%A4%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">关闭默认虚拟主机</a></li>
+<li><a href="#%E6%A0%B9%E6%8D%AE%E5%9F%9F%E5%90%8D%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">根据域名配置虚拟主机</a></li>
+</ul>
+</li>
+<li><a href="#%E9%85%8D%E7%BD%AE-aria2-webui">配置 Aria2 WebUI</a><ul>
+<li><a href="#%E8%AE%BE%E7%BD%AE-webui-aria2-%E9%A1%B5%E9%9D%A2">设置 webui-aria2 页面</a></li>
+</ul>
+</li>
+<li><a href="#%E9%85%8D%E7%BD%AE-cloudreve">配置 cloudreve</a><ul>
+<li><a href="#%E5%AE%89%E8%A3%85-cloudreve">安装 cloudreve</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6%E6%97%B6%E8%87%AA%E5%8A%A8%E5%B0%86%E6%9C%8D%E5%8A%A1%E9%87%8D%E5%90%AF">更新证书时自动将服务重启</a><ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD-web-%E6%9C%8D%E5%8A%A1">配置重新加载 web 服务</a></li>
+</ul>
+</li>
+<li><a href="#%E9%85%8D%E7%BD%AE-samba-%E6%9C%8D%E5%8A%A1">配置 samba 服务</a><ul>
+<li><a href="#%E9%85%8D%E7%BD%AE-samba-%E6%9C%8D%E5%8A%A1%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95">配置 samba 服务共享文件目录</a></li>
+<li><a href="#%E8%AE%BF%E9%97%AE-samba-%E6%9C%8D%E5%8A%A1">访问 samba 服务</a></li>
+</ul>
+</li>
+<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+<li><a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a></li>
+</ul>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文介绍如何使用树莓派搭建个人网盘，配合 aria2 进行离线下载，通过域名访问可直接访问树莓派网盘服务，可以随时观看离线下载的电影、访问文件、上传文件、分享文件(私密分享、到期分享)等，与使用百度网盘效果一样，文件访问速度取决于你家里的宽带上行速度。注意阅读本文需要你有一定的 linux 命令行基础。</p>
+<h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><p>你需要确定你家宽带可以获取公网 IP ，可以向电信运营商客服咨询。我的宽带为光纤入户，光猫只是做桥接，使用路由器进行拨号上网，这样路由器相当于网关，树莓派运行在路由器内网中(包括你家的电脑、手机等)，然后给树莓派分配静态 IP，当需要在外网访问树莓派的服务(web 服务)，需要在路由器做端口映射(转发)。</p>
+<h3 id="前期准备工作"><a href="#前期准备工作" class="headerlink" title="前期准备工作"></a>前期准备工作</h3><h4 id="树莓派购买"><a href="#树莓派购买" class="headerlink" title="树莓派购买"></a>树莓派购买</h4><p>可在在某宝上搜索关键字树莓派4B，也可以在树莓派官网进行<a target="_blank" rel="noopener" href="https://www.raspberrypi.org/products/raspberry-pi-4-model-b/">购买</a>，选择中国地区可以显示购买链接：</p>
+<p><img src="./buy_ip.png"></p>
+<p>树莓派4B 内存版本有 2GB、4GB、8GB版本，个人购买的是 2GB 版本，可以流程运行 ubuntu server 20.04 LTS (没有测试过图形界面)。需要注意的是，除了树莓派主板之外，想要运行树莓派，还需要 SD 卡、树莓派电源。树莓派主板、SD 卡、树莓派电源是必需的三件套，其中 SD 卡推荐读写速度 class10 以上，SD 卡读写规格如下：</p>
+<p><img src="./sd.png"></p>
+<p>micro HDMI 线、SD 读卡器、散热器、网线、移动硬盘等其他配件可按个人需求购买。SD 读卡器用于将系统镜像烧录到 SD 卡中，如果没有则需要购买，移动硬盘用于网盘服务存储(我个人移动硬盘容量为2T)，如果你家里有矿，也可以选择硬盘柜(硬盘柜需要独立供电)。</p>
+<h4 id="下载树莓派镜像"><a href="#下载树莓派镜像" class="headerlink" title="下载树莓派镜像"></a>下载树莓派镜像</h4><p>首先下载官方的烧录工具 imager，根据你当前使用的操作系统选择不同版本：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://downloads.raspberrypi.org/imager/imager_amd64.deb">Raspberry Pi Imager for Ubuntu</a></li>
+<li><a target="_blank" rel="noopener" href="https://downloads.raspberrypi.org/imager/imager.exe">Raspberry Pi Imager for Windows</a></li>
+<li><a target="_blank" rel="noopener" href="https://downloads.raspberrypi.org/imager/imager.dmg">Raspberry Pi Imager for macOS</a></li>
+</ul>
+<p>下载完毕之后需要打开进行安装，安装完毕之后，打开软件，初始运行界面如下：</p>
+<p><img src="./pi_imager1.png"></p>
+<p>单击 “CHOOSE OS” 选项可以选择下载的镜像：</p>
+<p><img src="./pi_imager2.png"></p>
+<p>这里我选择 “Ubuntu”，然后选择 “Ubuntu server 20.04 LTS” 64 位：</p>
+<p><img src="./pi_imager3.png"></p>
+<p>按个人喜好选择你喜欢的镜像下载，本文仅在 “Ubuntu server 20.04 LTS” 验证过，其他镜像可作为参考，不保证成功。</p>
+<p>选择完毕之后，回到始运行界面，这时候需要将 SD 卡插入到 SD 读卡器中，然后将读卡器插入到你的电脑(windows 系统自动识别，如果是 Linux 系统可能需要手动挂载)。然后单击 “CHOOSE  SD Card” 选项选择需要烧录到 SD 卡盘符，需要正确选择，因为烧录之前会进行格式化，选择完毕之后，单击 “WRITE” 选项，imager 工具会自动下载你选择的镜像然后烧录到 SD 卡中，花费时间却决于你的网络速度以及 SD 卡写入速度。</p>
+<p>以上方法是通过 imager 工具在线下载镜像，你也可以事先下载好镜像，然后通过 “Use custom” 选项选择下载好的镜像，然后再烧录到 SD 卡中：</p>
+<p><img src="./pi_imager4.png"></p>
+<p>树莓派 ubuntu 镜像可以访问 <a target="_blank" rel="noopener" href="https://ubuntu.com/download/raspberry-pi">https://ubuntu.com/download/raspberry-pi</a> 链接自行选择版本下载，其他系统镜像可自行网络上搜索。<br>以下为烧录过程示意图：</p>
+<p><img src="./pi_imager5.png"></p>
+<h4 id="配置树莓派网络连接"><a href="#配置树莓派网络连接" class="headerlink" title="配置树莓派网络连接"></a>配置树莓派网络连接</h4><p>如果你选择通过网线直接将树莓派连接到路由器，可跳过本章节，如果使用无线网络连接，则按以下步骤进行配置。</p>
+<p>烧录镜像完毕之后，SD 卡会被分成两个区(windows 下可能需要重新拔插 SD 读卡器才能识别)，其中一个分区为 “system-boot”：</p>
+<p><img src="./pi_system_boot1.png"></p>
+<p>在 “system-boot” 分区下找到 <strong>network-config</strong> 文件，然后打开该文件，该文件内容内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This file contains a netplan-compatible configuration which cloud-init</span></span><br><span class="line"><span class="comment"># will apply on first-boot. Please refer to the cloud-init documentation and</span></span><br><span class="line"><span class="comment"># the netplan reference for full details:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># https://cloudinit.readthedocs.io/</span></span><br><span class="line"><span class="comment"># https://netplan.io/reference</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Some additional examples are commented out below</span></span><br><span class="line"></span><br><span class="line">version: 2</span><br><span class="line">ethernets:</span><br><span class="line">  eth0:</span><br><span class="line">    dhcp4: <span class="literal">true</span></span><br><span class="line">    optional: <span class="literal">true</span></span><br><span class="line"><span class="comment">#wifis:</span></span><br><span class="line"><span class="comment">#  wlan0:</span></span><br><span class="line"><span class="comment">#    dhcp4: true</span></span><br><span class="line"><span class="comment">#    optional: true</span></span><br><span class="line"><span class="comment">#    access-points:</span></span><br><span class="line"><span class="comment">#      myhomewifi:</span></span><br><span class="line"><span class="comment">#        password: &quot;S3kr1t&quot;</span></span><br><span class="line"><span class="comment">#      myworkwifi:</span></span><br><span class="line"><span class="comment">#        password: &quot;correct battery horse staple&quot;</span></span><br><span class="line"><span class="comment">#      workssid:</span></span><br><span class="line"><span class="comment">#        auth:</span></span><br><span class="line"><span class="comment">#          key-management: eap</span></span><br><span class="line"><span class="comment">#          method: peap</span></span><br><span class="line"><span class="comment">#          identity: &quot;me@example.com&quot;</span></span><br><span class="line"><span class="comment">#          password: &quot;passw0rd&quot;</span></span><br><span class="line"><span class="comment">#          ca-certificate: /etc/my_ca.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 # 开头的行会被注释，我们需要在该文件末尾加入以下内容：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wifis:</span><br><span class="line">  wlan0:</span><br><span class="line">  dhcp4: <span class="literal">true</span></span><br><span class="line">  optional: <span class="literal">true</span></span><br><span class="line">  access-points:</span><br><span class="line">    <span class="string">&quot;home network&quot;</span>:</span><br><span class="line">      password: <span class="string">&quot;123456789&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>将 “home network” 换成你的 WiFi 名称(推荐先选择 2.4G 网段)，”123456789” 换成你的 WiFi 密码，比如你家的 WiFi 为 “ChinaNet-X9ej”，密码是 “123456789”，则内容应为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wifis:</span><br><span class="line">  wlan0:</span><br><span class="line">  dhcp4: <span class="literal">true</span></span><br><span class="line">  optional: <span class="literal">true</span></span><br><span class="line">  access-points:</span><br><span class="line">    <span class="string">&quot;ChinaNet-X9ej&quot;</span>:</span><br><span class="line">      password: <span class="string">&quot;123456789&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改完毕之后，保存文件。注意在第一次启动树莓派时，树莓派将尝试连接到该网络，可能会失败，只需重新启动即可(多次)。</p>
+<h4 id="启动树莓派"><a href="#启动树莓派" class="headerlink" title="启动树莓派"></a>启动树莓派</h4><p>配置完镜像文件之后，将 SD 卡从读卡器取出，然后插入到树莓派 SD 读卡器上，连接电源，连接网线(可选，通过有线网)，树莓派4B 接口示意图如下：</p>
+<p><img src="./pi4_motherboard.jpg"></p>
+<p>可以访问树莓派帮助页面查看动态示意图 <a target="_blank" rel="noopener" href="https://www.raspberrypi.org/help/">https://www.raspberrypi.org/help/</a> 。</p>
+<p>接好线之后，启动树莓派电源开关即可启动树莓派。树莓派启动成功之后，可在路由器查看树莓派的内网 IP 地址，如果你通过有线网络将树莓派连接到路由器，同时配置了无线网络，可能会看到两个 IP， 选择其中一个 IP，假设 IP 为 192.168.0.100，则通过 ssh 连接到树莓派的命令行为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh ubuntu@192.168.0.100</span><br></pre></td></tr></table></figure>
+
+<p>ubuntu 镜像创建默认账户名为 ubuntu， 如果你是使用 ssh 客户端软件比如 x-shell、mobaXterm 等可视化终端，则需要正确填写用户名以及 IP(我通过是 Windows Terminal 打开 wsl 页面，然后通过 ssh 命令登陆)。第一次连接上树莓派时提示你修改密码，可按提示修改密码，密码修改完毕之后，下次 ssh 登陆需要使用新的密码登陆。</p>
+<h3 id="域名购买"><a href="#域名购买" class="headerlink" title="域名购买"></a>域名购买</h3><p>因为需要公网访问树莓派提供的网盘服务，同时电信运营商给的公网 IP 可能会变化(实测下来，电信宽带几乎每两天一变)，因此可通过域名的方式访问你自己搭建的服务。按自己个人选择可在国内或者国外购买域名，国内域名购买一般需要备案，推荐到国外购买。我个人是在 <a target="_blank" rel="noopener" href="https://www.namesilo.com/">namesilo</a> 购买的域名。购买完毕之后，可在个人账户中管理域名的解析，将域名服务(NameServer)设置为 dnspod 域名服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f1g1ns1.dnspod.net</span><br><span class="line">f1g1ns2.dnspod.net</span><br></pre></td></tr></table></figure>
+<p>namesilo 修改示意图为：</p>
+<p><img src="./namesilo_name_server.png" alt="namesilo_name_server"></p>
+<p>点击提交即可，其他域名厂商后台管理大同小异，可自行搜索资料进行修改。使用 dnspod 的原因是因为电信的公网 IP 会经常变，实测下来大概两天变一次，因此需要在后台运行一个脚本，每隔一段时间检测当前的公网IP，如果变化则使用 dnspod API 更新域名的解析。</p>
+<h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>在 dnspod <a target="_blank" rel="noopener" href="https://www.dnspod.cn/register">官网</a>注册账号之后，在 dnspod 控制台添加一条域名解析记录，假设你的域名为 example.top，想通过 http(s)://example.top 访问你的网站，则添加的域名解析如下：</p>
+<p><img src="./dnspod_rc1.png" alt="dnspod_rc"></p>
+<p>主机记录为 <strong>@**， 记录值为 **1.1.1.1</strong>，<strong>1.1.1.1</strong> 需要替换成你真实宽带的 IP 地址；</p>
+<p>如果想通过 http(s)://<a target="_blank" rel="noopener" href="http://www.example.top/">www.example.top</a> 访问你的网站，则添加的域名解析如下：</p>
+<p><img src="./dnspod_rc2.png" alt="dnspod_rc"></p>
+<p>主机记录为 <strong>www</strong>，记录值为 <strong>1.1.1.1</strong>，<strong>1.1.1.1</strong> 需要替换成你真实宽带的 IP 地址。</p>
+<p>同时可在 dnspod 个人账户中安全中心生成 API Token，API Token 分为两部分：ID 以及 Token，ID 以及 Token 组合起来才能使用 dnspod 的 API，格式如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$&#123;ID&#125;</span>,<span class="variable">$&#123;Token&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">123456,abcdefghjklabcdefghjklabcdefghjklabcdefghjkl</span><br></pre></td></tr></table></figure>
+
+<p>推荐使用 <a target="_blank" rel="noopener" href="https://github.com/anrip/dnspod-shell">dnspod-shell</a> 进行动态域名解析，将 dnspod-shell 下载之后，dnspod-shell 目录结构为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── README.md</span><br><span class="line">├── ardnspod</span><br><span class="line">└── ddnspod.sh</span><br></pre></td></tr></table></figure>
+
+<p>使用到文件为 ardnspod 与 ddnspod.sh，其中修改 ddnspod.sh 为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 同目录下 ardnspod 路径，绝对路径</span></span><br><span class="line">your_real_path/ardnspod</span><br><span class="line"></span><br><span class="line"><span class="comment"># dnspod API Token，替换成真实的 dnspod token</span></span><br><span class="line">arToken=<span class="string">&quot;123456,abcdefghjklabcdefghjklabcdefghjklabcdefghjkl&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要动态的域名以及类型</span></span><br><span class="line"><span class="comment"># 记录为 @, 通过 http(s)://example.top 访问</span></span><br><span class="line">arDdnsCheck <span class="string">&quot;example.top&quot;</span> <span class="string">&quot;@&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，dnspod 对于免费版本的域名解析调用 API 次数限制为 3000 次/小时，具体可参加 <a target="_blank" rel="noopener" href="https://www.dnspod.cn/docs/info.html">dnspod API 说明</a>。创建 crontab 文件，设置每隔 10 分钟运行 ddnspod.sh 脚本:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/10 * * * * your_real_path/ddnspod.sh</span><br></pre></td></tr></table></figure>
+
+<p>your_real_path/ddnspod.sh 为 ddnspod.sh 脚本的绝对路径。crontab 具体使用方法可参考<a target="_blank" rel="noopener" href="https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/crontab.html">教程</a>。<br>另外也可以使用<a target="_blank" rel="noopener" href="https://github.com/NewFuture/DDNS">DDNS</a>，DDNS 支持平台比较多，可自行查阅官方文档。</p>
+<p>至此，域名购买以及解析已经完成，至于如何如何获取从电信运营商获取宽带公网 IP ，不在本文讨论范围，可查阅其他资料或者咨询电信运营商客服。</p>
+<h3 id="创建服务账户"><a href="#创建服务账户" class="headerlink" title="创建服务账户"></a>创建服务账户</h3><p>因为使用开源组件，为了降低开源组件(可能存在的缺陷等)对系统的影响和其相互影响建议建立不同的用户运行组件，建议建立不同的用户，如果嫌麻烦，使用同一用户即可。在创建用户之前，确保你已经创建了其他普通用户。</p>
+<p>本文使用 acme.sh(Let’s Encrypt ) 为 aria2 以及 cloudreve 生成证书，同时 cloudreve 需要与 cloudreve 在同一用户下(原因后续提到)，因此建立 acme 以及 web-server 用户：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo groupadd certusers</span><br><span class="line">sudo useradd -r -M -G certusers web-server</span><br><span class="line">sudo useradd -r -m -G certusers acme</span><br></pre></td></tr></table></figure>
+
+<p>其中 sudo groupadd certusers 添加用户组 certusers，并且将 web-server 以及 acme 添加到用户组 certusers 中，-M 为不需要生成 home 目录，-m 为生成 home 目录，-r 设置为系统用户，并且不设置密码。</p>
+<p>这里我们创建两个用户，分别为 web-server 以及 acme。其中用户 web-server 只需要运行 aria2、cloudreve 服务，而用户 acme 需要家目录配置 acme.sh。注意到，并未给这两个用户设置密码，所以只能通过其他已经登录的用户切换过去，这样尽可能的保证了系统的安全与任务的独立。因为 web-server 和 acme 都需要读写证书文件，所以将 web-server 和 acme 添加到同一个用户组 certusers，待申请到证书后将证书所有权交给用户组 certusers 并允许组内用户访问即可。</p>
+<h3 id="配置证书"><a href="#配置证书" class="headerlink" title="配置证书"></a>配置证书</h3><p>本文使用 acme 脚本(自动化申请证书客户端)向 <a target="_blank" rel="noopener" href="https://letsencrypt.org/">Let’s Encrypt</a> 机构申请域名证书。Let’s Encrypt 是一个于 2015 年三季度推出的数字证书认证机构，旨在以自动化流程消除手动创建和安装证书的复杂流程，并推广使万维网服务器的加密连接无所不在，为安全网站提供免费的传输层安全性协议（TLS）证书。唯一缺点是向 Let’s Encrypt 机构申请的证书的只有三个月期限，但是 acme 脚本会在证书到期之前自动重新申请，无需人工干预。需要指出的是目前大多数云长商也都提供了免费证书申请，比如阿里云、腾讯云等，可按个人喜好进行申请，如果你已经拥有自己域名证书，可跳过本章节。</p>
+<h4 id="创建证书文件夹"><a href="#创建证书文件夹" class="headerlink" title="创建证书文件夹"></a>创建证书文件夹</h4><p>新建一个文件夹 /etc/letsencrypt/live 用于存放证书，并且将证书文件夹所有者改为 acme，使得用户 acme 有权限写入证书：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p /etc/letsencrypt/live</span><br><span class="line">sudo chown -R acme:acme /etc/letsencrypt/live</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装自动管理-CA-证书脚本"><a href="#安装自动管理-CA-证书脚本" class="headerlink" title="安装自动管理 CA 证书脚本"></a>安装自动管理 CA 证书脚本</h4><p>分别执行如下命令，注意看是否报错。第一条命令切换到用户 acme。第二条命令安装 acme.sh。第三条命令退出当前用户。第四条命令再次切换到用户 acme。注意到这里两次切换用户的操作不能省略，因为安装完 acme.sh 之后要重新登录当前用户，否则无法识别出 acme.sh 命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su -l -s /bin/bash acme</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl  https://get.acme.sh | sh</span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su -l -s /bin/bash acme</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用-DNSPod-API-申请证书"><a href="#使用-DNSPod-API-申请证书" class="headerlink" title="使用 DNSPod API 申请证书"></a>使用 DNSPod API 申请证书</h4><p>执行以下命令，需要将 example.top 换成你的实际域名，DP_Id 以及 DP_Key 换成你的实际 dnspod API token：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> DP_Id=<span class="string">&quot;1234&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> DP_Key=<span class="string">&quot;sADDsdasdgdsf&quot;</span></span><br><span class="line"></span><br><span class="line">acme.sh  --issue  --dns dns_dp -d example.top</span><br></pre></td></tr></table></figure>
+
+<p>等一会，证书就会自动生成了。这里给出的 DP_Id 和 DP_Key 会被自动记录下来, 将来再使用 acme.sh 的时候，就不需要再次指定了，直接生成就好了:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --issue --dns dns_dp -d example.top</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书"></a>安装证书</h4><p>第一条命令使用 acme.sh 将证书安装到 /etc/letsencrypt/live 目录，这样 acme.sh 更新证书的时候会自动将新的证书安装到这里。第二条命令是配置 acme.sh 自动更新和自动更新证书。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d example.top --key-file /etc/letsencrypt/live/private.key --fullchain-file /etc/letsencrypt/live/certificate.crt</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh  --upgrade  --auto-upgrade</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h4><p>最后还要允许组内用户访问证书。可通过如下命令实现。第一条命令将证书文件夹所在用户组改为 certusers。第二条命令是赋予证书文件夹组内用户读取权限。运行这两条命令之后用户 web-server 就有权限读取证书了。第三条命令退出用户 acme，因为证书已经安装完成。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown -R acme:certusers /etc/letsencrypt/live</span><br><span class="line">chmod -R 750 /etc/letsencrypt/live</span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<p>注意申请的证书只有三个月期限，acme.sh 脚本会在证书到期之前自动更新证书，但是因为 aria2 与 cloudreve 都用到证书，因此在 acme.sh 更新证书的同时需要将 aria2 与 cloudreve 服务重新拉起，后文提到怎么使用 acme.sh 的 –reloadcmd 选项做到这一点。</p>
+<h3 id="挂载移动硬盘"><a href="#挂载移动硬盘" class="headerlink" title="挂载移动硬盘"></a>挂载移动硬盘</h3><p>个人在树莓派挂载 2T 2.5寸的移动硬盘，可按实际(消费能力)需求购买移动硬盘或者硬盘柜，注意树莓派4供电能力不算特别强，挂载两块以上的移动硬盘最好使用 USB 集线器单独供电。</p>
+<p>将移动硬盘 USB 接口插到树莓派4 的 USB 3.0，树莓派接口示意图如下：</p>
+<p><img src="./pi4.png"></p>
+<p>使用 fdisk 命令可查看硬盘信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/mmcblk0: 14.86 GiB, 15931539456 bytes, 31116288 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: dos</span><br><span class="line">Disk identifier: 0x87c6153d</span><br><span class="line"></span><br><span class="line">Device         Boot  Start      End  Sectors  Size Id Type</span><br><span class="line">/dev/mmcblk0p1 *      2048   526335   524288  256M  c W95 FAT32 (LBA)</span><br><span class="line">/dev/mmcblk0p2      526336 31116254 30589919 14.6G 83 Linux</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 1.84 TiB, 2000365289472 bytes, 3906963456 sectors</span><br><span class="line">Disk model: Elements 2621</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel <span class="built_in">type</span>: gpt</span><br><span class="line">Disk identifier: 28EA664A-9DE5-491A-8D8C-CE701B5A8996</span><br><span class="line"></span><br><span class="line">Device     Start        End    Sectors  Size Type</span><br><span class="line">/dev/sda1   2048 3906961407 3906959360  1.8T Microsoft basic data</span><br></pre></td></tr></table></figure>
+
+<p>这里为我的树莓派输出信息，/dev/mmcblk0p1 与 /dev/mmcblk0p2 是 SD 卡的分区，/dev/sda 为移动硬盘。第一次挂载硬盘时需要格式化，格式化完之后，后续不需要再次格式化，直接挂载即可。linux 文件系统 ext4、xfs 等可选，这里选择 xfs 文件系统，格式化命令为(注意将 /dev/sda1 换成你实际的磁盘设备)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.xfs  /dev/sda1</span><br></pre></td></tr></table></figure>
+
+<p>然后在根目录创建文件用于挂载磁盘，比如在 /media/ 目录下创建 data 目录并且将 data 目录修改为 777：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /media/data</span><br><span class="line">sudo chmod 777 /media/data</span><br></pre></td></tr></table></figure>
+
+<p>将已经格式好的磁盘挂载到 /media/data 目录(注意将 /dev/sda1 换成你实际的磁盘设备)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount /dev/sda1 /media/data</span><br></pre></td></tr></table></figure>
+
+<p>使用 mount 命令查看磁盘是否挂载成功，如果有输出结果，则挂载成功，输出举例如下(注意将 /dev/sda1 换成你实际的磁盘设备)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mount | grep /dev/sda1</span><br><span class="line"></span><br><span class="line">/dev/sda1 on /media/data <span class="built_in">type</span> xfs (rw,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota)</span><br></pre></td></tr></table></figure>
+
+<p>设置开机自动挂载，编辑 /etc/fstab 文件，在文件末尾加上以下配置(注意将 /dev/sda1 换成你实际的磁盘设备)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dev/sda1               /media/data     xfs     auto            0       0</span><br></pre></td></tr></table></figure>
+<p>然后将文件保存即可，如果树莓派重启，系统会自动挂载该磁盘设备。</p>
+<h3 id="配置-aria2"><a href="#配置-aria2" class="headerlink" title="配置 aria2"></a>配置 aria2</h3><h4 id="aria2-简介"><a href="#aria2-简介" class="headerlink" title="aria2 简介"></a>aria2 简介</h4><p>官网地址：<a target="_blank" rel="noopener" href="https://aria2.github.io/">aria2官网</a>：</p>
+<blockquote>
+<p>aria2 is a lightweight multi-protocol &amp; multi-source command-line download utility. It supports HTTP/HTTPS, FTP, SFTP,BitTorrent and Metalink. aria2 can be manipulated via built-inJSON-RPC and XML-RPC interfaces.(Aria2是一个命令行下轻量级、多协议、多来源的下载工具（支持 HTTP/HTTPS、FTP、BitTorrent、Metalink），内建 XML-RPC 和 JSON-RPC 用户界面。)</p>
+</blockquote>
+<h4 id="aria2-安装"><a href="#aria2-安装" class="headerlink" title="aria2 安装"></a>aria2 安装</h4><p>执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install aria2</span><br></pre></td></tr></table></figure>
+<p>即可完成安装，如果有需求，也可以从<a target="_blank" rel="noopener" href="https://github.com/aria2/aria2">官网</a>下载代码自行编译安装。</p>
+<h4 id="aria2-配置"><a href="#aria2-配置" class="headerlink" title="aria2 配置"></a>aria2 配置</h4><p>创建配置文件夹:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /etc/aria2/</span><br></pre></td></tr></table></figure>
+
+<p>新建 /etc/aria2/aria2.conf 配置文件，在 /etc/aria2/aria2.conf 文件中输入以下配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 文件的保存路径(可使用绝对路径或相对路径), 默认: 当前启动位置</span></span><br><span class="line">dir=/media/data/aria2_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M</span></span><br><span class="line">disk-cache=32M</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc</span></span><br><span class="line"><span class="comment"># 预分配所需时间: none &lt; falloc ? trunc &lt; prealloc</span></span><br><span class="line"><span class="comment"># falloc和trunc则需要文件系统和内核支持</span></span><br><span class="line"><span class="comment"># NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项</span></span><br><span class="line">file-allocation=trunc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 断点续传</span></span><br><span class="line"><span class="built_in">continue</span>=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 下载连接相关 ##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最大同时下载任务数, 运行时可修改, 默认:5</span></span><br><span class="line">max-concurrent-downloads=10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同一服务器连接数, 添加时可指定, 默认:1</span></span><br><span class="line">max-connection-per-server=16</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M</span></span><br><span class="line">min-split-size=10M</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单个任务最大线程数, 添加时可指定, 默认:5</span></span><br><span class="line">split=5</span><br><span class="line"></span><br><span class="line"><span class="comment"># 整体下载速度限制, 运行时可修改, 默认:0</span></span><br><span class="line">max-overall-download-limit=0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单个任务下载速度限制, 默认:0</span></span><br><span class="line"><span class="comment">#max-download-limit=0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 整体上传速度限制, 运行时可修改, 默认:0</span></span><br><span class="line"><span class="comment">#max-overall-upload-limit=0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 单个任务上传速度限制, 默认:0</span></span><br><span class="line"><span class="comment">#max-upload-limit=0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用IPv6, 默认:false</span></span><br><span class="line">disable-ipv6=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 进度保存相关 ##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在Aria2退出时保存`错误/未完成`的下载任务到会话文件</span></span><br><span class="line">save-session=/media/data/aria2.session</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从会话文件中读取下载任务</span></span><br><span class="line">input-file=/media/data/aria2.session</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0</span></span><br><span class="line">save-session-interval=60</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动保存任务进度的间隔时间（秒），0 为进程正常退出时保存，默认：60</span></span><br><span class="line">auto-save-interval=60</span><br><span class="line"></span><br><span class="line"><span class="comment">## RPC相关设置 ##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用RPC, 默认:false</span></span><br><span class="line">enable-rpc=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line">pause=<span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许所有来源, 默认:false</span></span><br><span class="line">rpc-allow-origin-all=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许非外部访问, 默认:false</span></span><br><span class="line">rpc-listen-all=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 事件轮询方式, 取值:[epoll, kqueue, port, poll, select], 不同系统默认值不同</span></span><br><span class="line">event-poll=epoll</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项</span></span><br><span class="line"><span class="comment"># 个人建议32 位以上</span></span><br><span class="line">rpc-secret=abcdef12345678912345678910</span><br><span class="line"></span><br><span class="line"><span class="comment"># 是否启用 RPC 服务的 SSL/TLS 加密,</span></span><br><span class="line"><span class="comment"># 启用加密后 RPC 服务需要</span></span><br><span class="line">rpc-secure=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 RPC 服务中启用 SSL/TLS 加密时的证书文件(.pem/.crt)</span></span><br><span class="line">rpc-certificate=/etc/letsencrypt/live/certificate.crt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在 RPC 服务中启用 SSL/TLS 加密时的私钥文件(.key)</span></span><br><span class="line">rpc-private-key=/etc/letsencrypt/live/private.key</span><br><span class="line"></span><br><span class="line"><span class="comment"># RPC监听端口, 端口被占用时可以修改, 默认:6800</span></span><br><span class="line">rpc-listen-port=6800</span><br><span class="line"></span><br><span class="line"><span class="comment">## BT/PT下载相关 ##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true</span></span><br><span class="line"><span class="comment">#follow-torrent=true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># BT监听端口, 当端口被屏蔽时使用, 默认:6881-6999</span></span><br><span class="line">listen-port=6900</span><br><span class="line"></span><br><span class="line"><span class="comment"># 单个种子最大连接数, 默认:55</span></span><br><span class="line"><span class="comment">#bt-max-peers=55</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开DHT功能, PT需要禁用, 默认:true</span></span><br><span class="line"><span class="comment"># 打开IPv6 DHT功能, PT需要禁用</span></span><br><span class="line">enable-dht=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line">enable-dht6=<span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># DHT网络监听端口, 6881-6999</span></span><br><span class="line">dht-listen-port=6901-6909</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地节点查找, PT需要禁用, 默认:false</span></span><br><span class="line">bt-enable-lpd=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 种子交换, PT需要禁用, 默认:true</span></span><br><span class="line">enable-peer-exchange=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每个种子限速, 对少种的PT很有用, 默认:50</span></span><br><span class="line"><span class="comment">#bt-request-peer-speed-limit=50K</span></span><br><span class="line"></span><br><span class="line">max-overall-upload-limit=100K</span><br><span class="line"></span><br><span class="line"><span class="comment"># 客户端伪装, PT需要</span></span><br><span class="line"><span class="comment">#peer-id-prefix=-TR2770-</span></span><br><span class="line">user-agent=Transmission/2.92</span><br><span class="line"><span class="comment">#user-agent=netdisk;4.4.0.6;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当种子的分享率达到这个数时, 自动停止做种, 0为一直做种, 默认:1.0</span></span><br><span class="line">seed-ratio=1.0</span><br><span class="line"></span><br><span class="line"><span class="comment">#Specifying --seed-time=0 disables seeding after download completed</span></span><br><span class="line">seed-time=0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 强制保存会话, 话即使任务已经完成, 默认:false</span></span><br><span class="line"><span class="comment"># 较新的版本开启后会在任务完成后依然保留.aria2文件</span></span><br><span class="line"><span class="comment">#force-save=false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># BT校验相关, 默认:true</span></span><br><span class="line"><span class="comment">#bt-hash-check-seed=true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 继续之前的BT任务时, 无需再次校验, 默认:false</span></span><br><span class="line">bt-seed-unverified=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存磁力链接元数据为种子文件(.torrent文件), 默认:false</span></span><br><span class="line">bt-save-metadata=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># BT 服务器列表，可自行替换该服务器列表</span></span><br><span class="line">bt-tracker=udp://tracker.coppersurfer.tk:6969/announce,udp://tracker.opentrackr.org:1337/announce,udp://p4p.arenabg.ch:1337/announce,udp://9.rarbg.to:2710/announce,udp://9.rarbg.me:2710/announce,udp://exodus.desync.com:6969/announce,udp://tracker.cyberia.is:6969/announce,udp://tracker.tiny-vps.com:6969/announce,udp://retracker.lanta-net.ru:2710/announce,udp://open.stealth.si:80/announce,udp://tracker.torrent.eu.org:451/announce,udp://tracker.moeking.me:6969/announce,udp://tracker3.itzmx.com:6961/announce,http://tracker1.itzmx.com:8080/announce,udp://ipv4.tracker.harry.lu:80/announce,udp://bt2.archive.org:6969/announce,udp://bt1.archive.org:6969/announce,udp://valakas.rollo.dnsabr.com:2710/announce,udp://opentor.org:2710/announce,http://tracker.nyap2p.com:8080/announce</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的选项:</p>
+<ul>
+<li><p>dir 保存下载文件的绝对路径，由于使用 web-server 用户运行 aria2，因此该路径必须存在，且 web-server 拥有读写权限</p>
+</li>
+<li><p>save-session 保存下载会话的文件绝对路径，文件名称 aria2.session ，需要事先创建 aria2.session 文件，并且 web-server 拥有读写权限</p>
+</li>
+<li><p>input-file 同 save-session</p>
+</li>
+<li><p>rpc-secret 访问 aria2 rpc 服务的令牌，cloudreve 服务需要该令牌才能访问 aria2 进行离线下载，建议设置 32 位以上</p>
+</li>
+<li><p>rpc-secure 开启 ssl 加密，需要设置为 true</p>
+</li>
+<li><p>rpc-certificate 在 RPC 服务中启用 SSL/TLS 加密时的证书文件，这里与前面申请证书设置路径一致</p>
+</li>
+<li><p>rpc-private-key 在 RPC 服务中启用 SSL/TLS 加密时的私钥文件，这里与前面申请证书设置路径一致</p>
+</li>
+<li><p>rpc-listen-port RPC监听端口, 端口被占用时可以修改, 默认:6800</p>
+</li>
+<li><p>listen-port BT监听端口, 当端口被屏蔽时使用, </p>
+</li>
+<li><p>dht-listen-port DHT网络监听端口, 按实际情况设置</p>
+</li>
+</ul>
+<p>其中使用到的端口需要在你自己的路由器进行端口转发或者映射到树莓派静态 IP 上(见下文配置 nginx 章节解释)，不同路由器操作方法不一样，具体配置方法可自行查询。</p>
+<p>配置中使用到的设置可以按照实际情况进行，举例如下：</p>
+<p>创建 /media/data/aria2_data 目录:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /media/data/aria2_data</span><br></pre></td></tr></table></figure>
+
+<p>修改 /media/data/aria2_data 目录拥有者为 web-server 用户：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R web-server:web-server /media/data/aria2_data</span><br></pre></td></tr></table></figure>
+
+<p>创建 /media/data/aria2.session：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo touch /media/data/aria2.session</span><br></pre></td></tr></table></figure>
+
+<p>修改 /media/data/aria2.session 文件为拥有者为 web-server 用户：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown web-server:web-server /media/data/aria2.session</span><br></pre></td></tr></table></figure>
+
+<p>注意必须确保 web-server 对 /media/data/aria2_data 与 /media/data/aria2.session 拥有读写权限</p>
+<h4 id="设置-aria2-开机启动"><a href="#设置-aria2-开机启动" class="headerlink" title="设置 aria2 开机启动"></a>设置 aria2 开机启动</h4><p>创建 /etc/systemd/system/aria2cd.service 文件，输入以下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Aria2 Daemon</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=web-server</span><br><span class="line">Group=web-server</span><br><span class="line">StartLimitInterval=5</span><br><span class="line">StartLimitBurst=10</span><br><span class="line">ExecStart=/usr/bin/aria2c --conf-path=/etc/aria2/aria2.conf</span><br><span class="line">ExecReload=/usr/bin/<span class="built_in">kill</span> -HUP <span class="variable">$MAINPID</span></span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartSec=120</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=default.target</span><br></pre></td></tr></table></figure>
+
+<p>注意 User 与 Group 设置为 web-server，启动 aria2c 提供的配置为 /etc/aria2/aria2.conf。</p>
+<p>然后重新加载配置文件(可选)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<p>使能 aria2c 开机启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="built_in">enable</span> aria2cd.service</span><br></pre></td></tr></table></figure>
+
+<p>使用 systemd 启动 aria2c</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart aria2cd.service</span><br><span class="line">sudo systemctl status aria2cd.service</span><br></pre></td></tr></table></figure>
+
+<p>如果启动不成功，可以使用以下命令查看日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo journalctl -f -u aria2cd.service</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-nginx"><a href="#配置-nginx" class="headerlink" title="配置 nginx"></a>配置 nginx</h3><p>aria2c 是一个后台程序，为了使用可视化的 web 页面操作 aria2c，可以配置 aria2c 前端界面，在配置前端界面之前，需要先安装 nginx，cloudreve 的离线下载功能提供操作 aria2c 界面，如果仅使用 cloudreve 操作 aria2c，可跳过本节内容。</p>
+<p>使用以下命令安装 nginx:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install nginx</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，nginx 服务将自动启动，可以使用以下命令检查服务的状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">● nginx.service - A high performance web server and a reverse proxy server</span><br><span class="line">   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) since Sun 2018-04-29 06:43:26 UTC; 8s ago</span><br><span class="line">     Docs: man:nginx(8)</span><br><span class="line">  Process: 3091 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 3080 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 3095 (nginx)</span><br><span class="line">    Tasks: 2 (<span class="built_in">limit</span>: 507)</span><br><span class="line">   CGroup: /system.slice/nginx.service</span><br><span class="line">           ├─3095 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;</span><br><span class="line">           └─3097 nginx: worker process</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加-nginx-服务用户到-certusers"><a href="#添加-nginx-服务用户到-certusers" class="headerlink" title="添加 nginx 服务用户到 certusers"></a>添加 nginx 服务用户到 certusers</h4><p>为了让 nginx 使用 ssl 证书加密网站，需要将 nginx 服务用户加到 certusers 组中，根据以下命令查看 nginx 服务的用户名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -eo user,<span class="built_in">command</span> | grep nginx</span><br></pre></td></tr></table></figure>
+
+<p>上述命令输出第二行第一列即为 nginx: worker process 所属用户，然后根据实际情况，运行下面三个命令之一：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -G certusers www-data</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -G certusers nginx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -G certusers nobody</span><br></pre></td></tr></table></figure>
+
+<h4 id="关闭默认虚拟主机"><a href="#关闭默认虚拟主机" class="headerlink" title="关闭默认虚拟主机"></a>关闭默认虚拟主机</h4><p>在 ubuntu 系列系统中，nginx 的虚拟主机配置文件在 <strong>/etc/nginx/sites-available/</strong> 文件夹中，如果要开启某一个虚拟主机，则建立一个软连接到 <strong>/etc/nginx/sites-enabled/</strong> 文件夹并重启 nginx 即可。默认虚拟主机在 <strong>/etc/nginx/sites-enabled/</strong> 文件夹，需要关闭掉，否则会冲突。</p>
+<p>使用如下命令关闭Nginx默认虚拟主机：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rm /etc/nginx/sites-enabled/default</span><br></pre></td></tr></table></figure>
+
+<h4 id="根据域名配置虚拟主机"><a href="#根据域名配置虚拟主机" class="headerlink" title="根据域名配置虚拟主机"></a>根据域名配置虚拟主机</h4><p>在 /etc/nginx/sites-available 目录创建新的虚拟主机，文件名为 example.top (注意域名 example.top 改为你自己的域名，这是虚拟主机的文件名，只是用来自己识别的)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo touch /etc/nginx/sites-available/example.top</span><br></pre></td></tr></table></figure>
+
+<p>然后编辑 /etc/nginx/sites-available/example.top 文件，输入以下内容(注意将 example.top 改为你自己的域名)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen  443 ssl;</span><br><span class="line">        ssl_certificate       /etc/letsencrypt/live/certificate.crt;</span><br><span class="line">        ssl_certificate_key   /etc/letsencrypt/live/private.key;</span><br><span class="line">        ssl_protocols         TLSv1.2 TLSv1.3;</span><br><span class="line">        ssl_ciphers           HIGH:!aNULL:!MD5;</span><br><span class="line">        server_name           example.top;</span><br><span class="line"></span><br><span class="line">        root /var/www;</span><br><span class="line">        location / &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>listen  443 ssl 配置 nginx 服务监听 443 端口并且使用 ssl 加密</p>
+</li>
+<li><p>ssl_certificate 配置域名证书文件路径</p>
+</li>
+<li><p>ssl_certificate_key 配置域名证书私钥文件路径</p>
+</li>
+<li><p>server_name 配置域名</p>
+</li>
+<li><p>root 配置网站静态文件的根目录</p>
+</li>
+</ul>
+<p>1.需要注意的是监听 443 端口是指树莓派监听它网卡设备上的 443 端口，一般树莓派是接在路由器，因此树莓派其实监听的是内网地址的 443 端口，比如 192.168.1.190:443，内网网段取决于你使用的路由器。再者，运营商一般都会封禁 80、443 端口，因此需要在路由器配置端口映射或者端口转发。比如在路由器上将 5001 端口映射(转发)到内网树莓派(树莓派在内网需要拥有静态IP，一般可通过路由器设置)的 443 端口上，这样在外网可以通过以下地址访问(注意将 example.top 改为你自己的域名)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.top:5001 </span><br></pre></td></tr></table></figure>
+
+<p>2.这里使用了 /var/www 目录用于存放用户自定义网站静态文件，因此需要创建：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /var/www/</span><br></pre></td></tr></table></figure>
+
+<p>由于 nginx 只需要读取 /var/www/ 目录下的静态文件，因此不需要修改 /var/www/ 访问权限。然后使能配置文件(注意 example.top 改为你自己的域名)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /etc/nginx/sites-available/example.top /etc/nginx/sites-enabled/</span><br></pre></td></tr></table></figure>
+
+<p>重启 nginx:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart nginx</span><br><span class="line">sudo systemctl status nginx</span><br></pre></td></tr></table></figure>
+
+<p>可以在浏览器输入 <a target="_blank" rel="noopener" href="https://example.top:5001/">https://example.top:5001</a> 或者通过 curl 命令测试(注意将 example.top 改为你自己的域名)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://example.top:5001</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-Aria2-WebUI"><a href="#配置-Aria2-WebUI" class="headerlink" title="配置 Aria2 WebUI"></a>配置 Aria2 WebUI</h3><p>为了使用可视化的 web 页面操作 aria2，可使用 <a target="_blank" rel="noopener" href="https://github.com/ziahamza/webui-aria2">webui-aria2</a> 配合 nginx 管理 aria2。首先将 webui-aria2 项目下载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/ziahamza/webui-aria2.git</span><br></pre></td></tr></table></figure>
+
+<p>然后将 webui-aria2 目录下的 docs 目录拷贝到 /var/www 目录下，/var/www 为配置 nginx 时创建的目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp -r webui-aria2/docs/  /var/www</span><br></pre></td></tr></table></figure>
+
+<p>重命名 docs 为 aria2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv /var/www/docs /var/www/aria2</span><br></pre></td></tr></table></figure>
+
+<p>然后在浏览器输入 <a target="_blank" rel="noopener" href="https://example.top:5001/aria2">https://example.top:5001/aria2</a> 即可访问 webui-aria2 web 页面(注意将 example.top 改为你自己的域名)，如果访问不了，可能需要重启 nginx 服务，然后再重试</p>
+<h4 id="设置-webui-aria2-页面"><a href="#设置-webui-aria2-页面" class="headerlink" title="设置 webui-aria2 页面"></a>设置 webui-aria2 页面</h4><p>打开 <a target="_blank" rel="noopener" href="https://example.top:5001/aria2">https://example.top:5001/aria2</a>  页面效果如下：</p>
+<p><img src="./aria2_webui.png"></p>
+<p>点击设置按钮，再点击连接设置：</p>
+<p><img src="./aria2_webui_set1.png"></p>
+<p>然后在以下页面输入信息：</p>
+<p><img src="./aria2_webui_set2.png"></p>
+<ul>
+<li><p>主机 主机即域名，这里需要将 example.top 改为你自己的域名</p>
+</li>
+<li><p>端口 注意端口为 6800 而不是 5001，6800 为 aria2 监听的 rpc 端口(见上文配置)</p>
+</li>
+<li><p>命令令牌 命令令牌需要与 aria2 配置中令牌一致</p>
+</li>
+</ul>
+<p>然后点击保存链接即可，保存完成后，可以通过添加按钮添加需要下载的文件，支持种子、磁力链接等，与使用迅雷无异，并且没有限速度。</p>
+<h3 id="配置-cloudreve"><a href="#配置-cloudreve" class="headerlink" title="配置 cloudreve"></a>配置 cloudreve</h3><p><a target="_blank" rel="noopener" href="https://github.com/cloudreve/Cloudreve">cloudreve</a> 一款开源免费的网盘系统，借助 cloudreve 能够快速搭建起公私兼备的网盘，其演示界面如下：</p>
+<p><img src="./cloudreve_home.png"></p>
+<p>cloudreve 支持特性如下：</p>
+<p><img src="./cloudreve_feat.png"></p>
+<h4 id="安装-cloudreve"><a href="#安装-cloudreve" class="headerlink" title="安装 cloudreve"></a>安装 cloudreve</h4><p>1.首先在在挂载移动硬盘目录下创建 cloudreve 的工作目录以及 cloudreve 离线下载目录 temp，以移动硬盘挂载到 /media/data 目录为例，<br>执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo  mkdir /media/data/cloudreve_home/</span><br><span class="line">sudo  mkdir /media/data/cloudreve_home/temp</span><br></pre></td></tr></table></figure>
+
+<p>将 /media/data/cloudreve_home 所有权修改为 web-server：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R web-server:web-server /media/data/cloudreve_home/</span><br></pre></td></tr></table></figure>
+
+<p>至此准备工作完毕。</p>
+<p>2.cloudreve <a target="_blank" rel="noopener" href="https://github.com/cloudreve/Cloudreve/releases">官网</a>有构建好的二进制安装包，注意选择 arm 平台，选择 64 位还是 32 位取决于你树莓派安装的系统。选择最新版本，下载完解压得到 cloudreve 可执行文件，如果没有可执行权限，使用以下命令增加可执行权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x ./cloudreve</span><br></pre></td></tr></table></figure>
+
+<p>然后将 cloudreve 可执行文件拷贝到 /media/data/cloudreve_home/，将 cloudreve 所有权改为 web-server(可选):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R web-server:web-server /media/data/cloudreve_home/</span><br></pre></td></tr></table></figure>
+
+<p>3.创建 /etc/systemd/system/cloudreve.service 文件，输入以下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=cloudreve Daemon</span><br><span class="line">After=network.target network-online.target nss-lookup.target mysql.service mysqld.service</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=web-server</span><br><span class="line">Group=web-server</span><br><span class="line">StartLimitInterval=5</span><br><span class="line">StartLimitBurst=10</span><br><span class="line">WorkingDirectory=/media/data/cloudreve_home</span><br><span class="line">ExecStart=/media/data/cloudreve_home/cloudreve</span><br><span class="line">Restart=on-abnormal</span><br><span class="line">RestartSec=5s</span><br><span class="line">StandardError=syslog</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=default.target</span><br></pre></td></tr></table></figure>
+
+<p>注意 User 与 Group 都设置为 web-server(用户)，WorkingDirectory 设置为 /media/data/cloudreve_home(工作目录)，ExecStart 设置为 /media/data/cloudreve_home/cloudreve(启动命令)。如果路径不相同，可自行替换</p>
+<p>4.执行以下命令第一次启动 cloudreve：</p>
+<p>然后重新加载配置文件(可选)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<p>使能 cloudreve 开机启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="built_in">enable</span> cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>使用 systemd 启动 aria2c</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart cloudreve.service</span><br><span class="line">sudo systemctl status cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>然后使用以下命令查看 cloudreve 第一次输出日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo journalctl -u cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>如果没有出错，则 cloudreve 日志书如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[Info]    2020-09-12 10:19:09 初始化数据库连接</span><br><span class="line">[Info]    2020-09-12 10:19:09 开始进行数据库初始化...</span><br><span class="line">[Info]    2020-09-12 10:19:09 初始管理员账号：admin@cloudreve.org</span><br><span class="line">[Info]    2020-09-12 10:19:09 初始管理员密码：UlsRPqKt</span><br><span class="line">[Info]    2020-09-12 10:19:09 数据库初始化结束</span><br><span class="line">[Info]    2020-09-12 10:19:09 初始化任务队列，WorkerNum = 10</span><br><span class="line">[Info]    2020-09-12 10:19:09 初始化定时任务...</span><br><span class="line">[Info]    2020-09-12 10:19:10 当前运行模式：Master</span><br><span class="line">[Info]    2020-09-12 10:19:10 开始监听 :5212</span><br></pre></td></tr></table></figure>
+
+<p>其中需要记录管理员账号以及管理员密码，后续第一次登陆到 cloudreve web 页面需要，请实际记录你自己的初始管理员密码。<br>另外 cloudreve 会在 /media/data/cloudreve_home 生成两个文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conf.ini cloudreve.db</span><br></pre></td></tr></table></figure>
+
+<p>其中 conf.ini 为 cloudreve 初始配置文件，cloudreve.db 为 cloudreve 使用的数据库文件，切记不可将 cloudreve.db 数据文件删除。</p>
+<p>然后编辑使用 root 权限编辑 /media/data/cloudreve_home/conf.ini 文件(考虑到当前用户可能不是 web-server 用户)，根据实际情况修为以下信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[System]</span><br><span class="line">Mode = master</span><br><span class="line">Listen = 127.0.0.1:5004</span><br><span class="line">SessionSecret = abcdeasdadasdadasdasdasdasdasdasdasdasdadasdasasdasdasdasasas</span><br><span class="line">HashIDSalt = aasdasdadasdasdadasdadadadasdasdasdasdadasdasdasdasdasdasdasdas</span><br><span class="line"></span><br><span class="line">[SSL]</span><br><span class="line">Listen = :5003</span><br><span class="line">CertPath = /etc/letsencrypt/live/certificate.crt</span><br><span class="line">KeyPath = /etc/letsencrypt/live/private.key</span><br></pre></td></tr></table></figure>
+
+<p>其中 [System] 需要修改地方如下：</p>
+<ul>
+<li>Listen 主节点机监听的地址，由于只运行一个节点，不需要从节点，因此将此地址设置为回环地址 127.0.0.1:5004，不对外暴露</li>
+</ul>
+<p>SessionSecret 与 HashIDSalt 由 cloudreve 自动生成，不需要更改。</p>
+<p>添加 [SSL] 加密配置：</p>
+<ul>
+<li><p>Listen 对外提供的 web 页面地址，这里设置为 :5003，表示监听所有网卡地址的 5003 端口</p>
+</li>
+<li><p>CertPath 设置域名证书的路径，证书在前文配置已申请安装</p>
+</li>
+<li><p>KeyPath  设置域名私钥的路径，私钥在在前文配置已申请安装</p>
+</li>
+</ul>
+<p>配置保存之后，重新修改 /media/data/cloudreve_home/conf.ini 所有权(可选)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R web-server:web-server /media/data/cloudreve_home/</span><br></pre></td></tr></table></figure>
+
+<p>5.使用以下命令重新启动 cloudreve：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart cloudreve.service</span><br><span class="line">sudo systemctl status cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>如果没有出错，现在路由器将 5003 端口映射(转发)到内网树莓派的 IP 地址上，然后在浏览器输入 <a target="_blank" rel="noopener" href="https://example.top:5003/">https://example.top:5003</a> (注意将 example.top 换成你自己的域名)，可看到如下登陆界面：</p>
+<p><img src="./cloudreve_login.png"></p>
+<p>填写之前记录的管理员账户以及初始密码即可完成登陆。点击右上角的头像，可进行账户管理：</p>
+<p><img src="./cloudreve_set.png"></p>
+<p>选择管理面板后，进入控制面板页面：</p>
+<p><img src="./cloudreve_set1.png"></p>
+<p>然后选择依次点击参数设置、注册与登陆，将 “允许新用户注册” 选项关闭，因为只是个人使用，没必要开启多用户，同时也为了防止域名泄露被恶意注册：</p>
+<p><img src="./cloudreve_set2.png"></p>
+<p>在 “参数设置” 选项下，点击 “离线下载”，进行 aria2 离线下载设置：</p>
+<p><img src="./cloudreve_set3.png"></p>
+<p>需要填写 aria2 RPC 服务器地址、aria2 RPC Secret(aria2 rpc 令牌)、临时下载目录。aria2 RPC 服务器地址在设置 aria2 章节已经设置好，应为 <a target="_blank" rel="noopener" href="https://example.top:6800/">https://example.top:6800</a>(需要将 example.top 域名替换成你自己域名)，而 aria2 rpc 令牌则需要与 /etc/aria2/aria2.conf 文件设置 rpc 令牌一致，临时下载目录设置为 /media/data/cloudreve_home/temp，这个目录在前面章节已经创建完毕，并且所有者为 web-server，因为 cloudreve 与 aria2 服务都是以 web-server 用户启动的，因此需要确保 web-server 用户对设置的目录拥有读写权限(/media/data/cloudreve_home/temp)。填写完毕之后，可以点击测试链接进行测试。</p>
+<p>然后点击用户组，点击管理员账户最右边编辑选项:</p>
+<p><img src="./cloudreve_set4.png"></p>
+<p>将存储容量修改为你实际硬盘的容量，这里我修改 2TB：</p>
+<p><img src="./cloudreve_set5.png"></p>
+<p>然后页面底下点击保存即可：</p>
+<p><img src="./cloudreve_set6.png"></p>
+<p>最后点击用户选项，对登陆邮箱、密码进行修改：</p>
+<p><img src="./cloudreve_set7.png"></p>
+<p>依次填入你的实际邮箱，昵称，以及密码，填写完毕之后，点击保存即可，建议密码长度 16 位以上。同时也可以在个人账户设置页面下设置两步验证：</p>
+<p><img src="./cloudreve_set8.png"></p>
+<p>至此 cloudreve 已经设置完毕，可在 cloudreve web 主界面进行文件管理，离线下载等功能。如果使用有问题可到<a target="_blank" rel="noopener" href="https://forum.cloudreve.org/">官方论坛</a>搜索答案或者提问。</p>
+<h3 id="更新证书时自动将服务重启"><a href="#更新证书时自动将服务重启" class="headerlink" title="更新证书时自动将服务重启"></a>更新证书时自动将服务重启</h3><p>由于使用的是 acme 自动申请的证书，因此在 acme 更新证书的同时，需要把 nginx(如果安装)、aria2、cloudreve 服务重新启动，因为这三个服务都用到了证书。一般来讲，应用都是在启动时只读取一次证书，后续证书内容保存到应用内存中，因此当 acme 将证书更新并且把证书安装到设定路径时，需要把这三个服务重新启动。如果不是使用 acme 申请的证书，可跳过本章节。</p>
+<h4 id="配置重新加载-web-服务"><a href="#配置重新加载-web-服务" class="headerlink" title="配置重新加载 web 服务"></a>配置重新加载 web 服务</h4><p>前文章节提到使用以下命令进行证书安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d example.top --key-file /etc/letsencrypt/live/private.key --fullchain-file /etc/letsencrypt/live/certificate.crt</span><br></pre></td></tr></table></figure>
+
+<p>example.top 为你的实际域名，/etc/letsencrypt/live 为证书安装路径。这里只要执行过的命令，acme.sh 会自动记录，并且在下一次重新申请证书时，自动调用。我们需要做的是使用 acme.sh 提供的 “–reloadcmd” 选项添加重启 nginx(如果安装)、aria2、cloudreve 服务命令即可，这个三个服务重启命令分别为：</p>
+<p>1.nginx(如果你有安装此服务)，这里用的是 service nginx force-reload, 不是 service nginx reload, 据测试, reload 并不会重新加载证书, 所以用的 force-reload(<a target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E">https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E</a>)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/sbin/service nginx force-reload </span><br></pre></td></tr></table></figure>
+
+<p>2.aria2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart aria2cd.service</span><br></pre></td></tr></table></figure>
+
+<p>3.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>这三者服务的重启都需要 root 权限，但是 acme.sh 脚本运行(自动)在 acme 用户下，因此需要将这三个命令 root 权限(无需密码)赋予 acme 用户。需要指出的时，即使赋予 acme 用户 root 权限，acme 用户在执行 sudo 语句时需要输入 root 密码，因为不想在暴露 root 密码或者完全把 root 权限赋予 acme 用户，因此将三个重启服务的命令 root 权限(无需密码)赋予 acme 用户。</p>
+<p>在 /etc/sudoers.d/ 目录下新建 acme 文件(ubuntu 环境，如果是其他系统请参考其他资料)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo touch /etc/sudoers.d/acme</span><br></pre></td></tr></table></figure>
+
+<p>然后使用以下命令编辑 /etc/sudoers.d/acme 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo visudo /etc/sudoers.d/acme</span><br></pre></td></tr></table></figure>
+<p>使用 visudo 会默认文本编辑器打开 /etc/sudoers.d/acme 文件，比如 nano、vim 等。系统默认编辑器可自行设定，比较简单方法是只保留你需要编辑即可，比如使用 vim，则可以把 nano 卸载，反之亦然。</p>
+<p>回到正题，使用 visudo 编辑 sudoers 相关的权限文件是因为如果保存了无效的 sudoers 文件，则系统将无法解析该文件，则无法验证用户的 sudo 权限。因此，如果编辑了 /etc/sudoers.d/acme 文件但是语法是错误的，那么将无法通过 root 权限再次对其进行修复，同时所有的 sudo 命令提升都失败。此时只能切换到 root 用户修改文件进行编辑(通过 su root 命令切换)，因此在编辑 /etc/sudoers.d 目录下的文件是确保使用 visudo 命令或者确保你已经拥有 root 用户，强烈建议先建立 root 用户(系统一般自带 root 用户)并且设置 root 用户密码(sudo passwd root 设置 root 密码)再继续往下执行，如果万一出错，可切换到 root 用户进行补救(删除文件或者还原)。</p>
+<p>我们使用 visudo 命令将 /etc/sudoers.d/acme 文件编辑为以下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme ALL=(ALL) NOPASSWD: /usr/sbin/service nginx force-reload, /usr/bin/systemctl restart aria2cd.service, /usr/bin/systemctl restart cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>如果你没有安装 nginx 服务，则文件内容应为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart aria2cd.service, /usr/bin/systemctl restart cloudreve.service</span><br></pre></td></tr></table></figure>
+
+<p>“NOPASSWD” 设置执行 sudo 时不需要输入密码命令选项，由冒号后给出，以 “,” 分隔开。如果保存时语法错误，visudo 提示如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/etc/sudoers.d/acme: syntax error near line 2 &lt;&lt;&lt;</span><br><span class="line">What now?</span><br><span class="line">Options are:</span><br><span class="line">  (e)dit sudoers file again</span><br><span class="line">  e(x)it without saving changes to sudoers file</span><br><span class="line">  (Q)uit and save changes to sudoers file (DANGER!)</span><br></pre></td></tr></table></figure>
+
+<p>接着我们输入 e 则继续编辑文件，输入 x 则退出但是不保存文件，输入 Q 则强制保存文件(<strong>强烈不推荐</strong>，这会导致 root 权限认证问题)。</p>
+<p>如果保存成功，则需要切换到 acme 用户，重新设置 acme 安装证书时执行的命令，使用以下命令切换到 acme 用户：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su -l -s /bin/bash acme</span><br></pre></td></tr></table></figure>
+
+<p>重新安装证书：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d example.top --key-file /etc/letsencrypt/live/private.key --fullchain-file /etc/letsencrypt/live/certificate.crt --reloadcmd <span class="string">&quot;sudo /usr/sbin/service nginx force-reload &amp;&amp; sudo systemctl restart aria2cd.service &amp;&amp; sudo systemctl restart cloudreve.service&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你没有安装 nginx 服务，则命令应为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d example.top --key-file /etc/letsencrypt/live/private.key --fullchain-file /etc/letsencrypt/live/certificate.crt --reloadcmd <span class="string">&quot;sudo systemctl restart aria2cd.service &amp;&amp; sudo systemctl restart cloudreve.service&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意将 example.top 换成你的域名，如果成功则输出信息如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[Thu Sep 24 23:23:52 CST 2020] Installing key to:/etc/letsencrypt/live/private.key</span><br><span class="line">[Thu Sep 24 23:23:52 CST 2020] Installing full chain to:/etc/letsencrypt/live/certificate.crt</span><br><span class="line">[Thu Sep 24 23:23:52 CST 2020] Run reload cmd: sudo /usr/sbin/service nginx force-reload &amp;&amp; sudo systemctl restart aria2cd.service &amp;&amp; sudo systemctl restart cloudreve.service</span><br><span class="line">[Thu Sep 24 23:23:57 CST 2020] Reload success</span><br></pre></td></tr></table></figure>
+
+<p>再次说明安装证书命令只需要执行一般即可，acme.sh 会自动记录使用的命令，并且在下一次自动更新证书时自动执行。</p>
+<h3 id="配置-samba-服务"><a href="#配置-samba-服务" class="headerlink" title="配置 samba 服务"></a>配置 samba 服务</h3><p>无论是通过 aria2 web 页面下载视频或者还是通过 cloudreve 离线下载功能下载视频，视频文件都会保存到树莓派的移动硬盘上。如果是通过 cloudreve 离线下载，则可以通过浏览器观看。但是对于 H.265 编码，部分浏览器可能不支持编码，个人实测下来，AMD 锐龙的 win10 系统无法通过浏览器在线观看 H.265 编码视频(在 cloudreve web 页面)，但是英特尔的笔记本是可以的，怀疑跟平台有关。另外如果视频没有字幕，这是时候需要外挂字幕，则浏览器无能为力。</p>
+<p>因此推荐在树莓派上开启 samba 服务，通过 windows 直接访问，即可播放视频。对于移动端，可以使用 vlc 等其他播放器 ，也可以访问树莓派上的视频文件，直接播放。</p>
+<h4 id="配置-samba-服务共享文件目录"><a href="#配置-samba-服务共享文件目录" class="headerlink" title="配置 samba 服务共享文件目录"></a>配置 samba 服务共享文件目录</h4><p>使用 root 权限编辑 /etc/samba/smb.conf 文件，在文件最后加上以下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[sambashare1]</span><br><span class="line">    comment = Samba on Ubuntu</span><br><span class="line">    path = <span class="string">&quot;/media/data/cloudreve_home/uploads/&quot;</span></span><br><span class="line">    <span class="built_in">read</span> only = no</span><br><span class="line">    browsable = yes</span><br><span class="line">    public = no</span><br><span class="line"></span><br><span class="line">[sambashare2]</span><br><span class="line">    comment = Samba on Ubuntu</span><br><span class="line">    path = <span class="string">&quot;/media/data/aria2_data&quot;</span></span><br><span class="line">    <span class="built_in">read</span> only = no</span><br><span class="line">    browsable = yes</span><br><span class="line">    public = no</span><br></pre></td></tr></table></figure>
+
+<p>[sambashare1] 与 [sambashare2] 设置 samba 共享的文件目录名称，即在 windows 或者移动端访问树莓派 samba 服务时所看到文件目录名称；path 则设置具体分享的根文件目录，这里分别设置为 cloudreve 的存储目录以及 aria2c 保存的文件目录，这两个目录请按照你实际情况设置；public 设置为 no 表示需要密码才可以访问。</p>
+<p>将 /etc/samba/smb.conf 文件保存之后，需要设置 samba 用户密码(注意到 /media/data/cloudreve_home 与 /media/data/aria2_data 的所有权根据前文已经设定为 web-server 用户，如果不是请自行替换成实际用户名)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo smbpasswd -a web-server</span><br></pre></td></tr></table></figure>
+
+<p>输入两部密码即可，然后重启 samba 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart smbd.service</span><br></pre></td></tr></table></figure>
+
+<h4 id="访问-samba-服务"><a href="#访问-samba-服务" class="headerlink" title="访问 samba 服务"></a>访问 samba 服务</h4><p>需要确认你树莓派 IP 地址，比如，树莓派的 IP 地址为 192.169.0.100，windows 与树莓派使用同一个路由器(同一局域网)，按时 “windows 键” + “r”，然后输入：\192.169.0.100 之后按回车，输入设置的用户名 web-server(web-server 需要替换成你实际设置用户名) 以及设置的 samba 密码即可：</p>
+<p><img src="./smb_set1.png"></p>
+<p>如果如果访问失败就需要打开 Windows10 控制面板进行配置(可能需要重启)：</p>
+<p><img src="./smb_set2.png"></p>
+<p>对于移动端使用 VLC 播放器访问 samba 共享文件如下：</p>
+<p>点击网络功能，选择文件服务器(SMB):</p>
+<p><img src="./smb_set3.jpg"></p>
+<p>然后填写用户名以及密码即可：</p>
+<p><img src="./smb_set4.jpg"></p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>十分感谢耐心看完本文。当初自己买树莓派时，就想纯粹搭个广告过滤的 dns 服务，没想到想要搭建个人网盘以及”家庭影院”(家里没矿买不起索尼电视机)，后续更新台式机的 2K 显示器之后，就想着找些经典电影(2K以上分辨率)回味，后续自己慢慢摸索搭建出这一套服务，相比于 7x24 小时开机的台式机，我更倾向于使用树莓派(功耗不是一个数量级)，而且树莓派可玩性远远不仅以此。搭建完毕之后，为了以后可能需要再次用到(升级树莓派)，就有了本文，希望能帮得到你。</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview">How to install Ubuntu on your Raspberry Pi</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/acmesh-official/acme.sh/wiki">acme.sh wiki</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.dnspod.cn/docs/index.html">dnspod api</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://aria2.github.io/manual/en/html/aria2c.html">aria2 manual</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.cloudreve.org/">cloudreve docs</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">systemd (简体中文) - ArchWiki</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://trojan-tutor.github.io/2019/04/10/p41.html">自建梯子教程 –Trojan版本</a></p>
+</li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>gfheng</h4>
+    <p>maplewine@outlook.com</p>
+</section>
+    </footer>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/blog/">gfheng's 杂记</a> &copy; 2014 &bull; All rights reserved.</section>
+     <section class="poweredby">Proudly published with <a class="icon-ghost" target="_blank" rel="noopener" href="http://zespia.tw/hexo/">Hexo</a></section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/blog/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/blog/js/index.js"></script>
+
+
+
+
+
+
+</body>
+</html>
