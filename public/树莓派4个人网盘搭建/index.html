@@ -47,59 +47,59 @@
     <h1 class="post-title">树莓派4个人网盘搭建</h1>
     <section class="post-content">
       <ul>
-<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
-<li><a href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</a></li>
+<li>  <a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li>  <a href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</a></li>
 <li><a href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">前期准备工作</a><ul>
-<li><a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E8%B4%AD%E4%B9%B0">树莓派购买</a></li>
-<li><a href="#%E4%B8%8B%E8%BD%BD%E6%A0%91%E8%8E%93%E6%B4%BE%E9%95%9C%E5%83%8F">下载树莓派镜像</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E6%A0%91%E8%8E%93%E6%B4%BE%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5">配置树莓派网络连接</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8%E6%A0%91%E8%8E%93%E6%B4%BE">启动树莓派</a></li>
+<li>  <a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E8%B4%AD%E4%B9%B0">树莓派购买</a></li>
+<li>  <a href="#%E4%B8%8B%E8%BD%BD%E6%A0%91%E8%8E%93%E6%B4%BE%E9%95%9C%E5%83%8F">下载树莓派镜像</a></li>
+<li>  <a href="#%E9%85%8D%E7%BD%AE%E6%A0%91%E8%8E%93%E6%B4%BE%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5">配置树莓派网络连接</a></li>
+<li>  <a href="#%E5%90%AF%E5%8A%A8%E6%A0%91%E8%8E%93%E6%B4%BE">启动树莓派</a></li>
 </ul>
 </li>
-<li><a href="#%E5%9F%9F%E5%90%8D%E8%B4%AD%E4%B9%B0">域名购买</a></li>
-<li><a href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90">域名解析</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7">创建服务账户</a></li>
+<li>  <a href="#%E5%9F%9F%E5%90%8D%E8%B4%AD%E4%B9%B0">域名购买</a></li>
+<li>  <a href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90">域名解析</a></li>
+<li>  <a href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7">创建服务账户</a></li>
 <li><a href="#%E9%85%8D%E7%BD%AE%E8%AF%81%E4%B9%A6">配置证书</a><ul>
-<li><a href="#%E5%88%9B%E5%BB%BA%E8%AF%81%E4%B9%A6%E6%96%87%E4%BB%B6%E5%A4%B9">创建证书文件夹</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85%E8%87%AA%E5%8A%A8%E7%AE%A1%E7%90%86-CA-%E8%AF%81%E4%B9%A6%E8%84%9A%E6%9C%AC">安装自动管理 CA 证书脚本</a> </li>
-<li><a href="#%E4%BD%BF%E7%94%A8-DNSPod-API-%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6">使用 DNSPod API 申请证书</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6">安装证书</a></li>
-<li><a href="#%E4%BF%AE%E6%94%B9%E6%9D%83%E9%99%90">修改权限</a></li>
+<li>  <a href="#%E5%88%9B%E5%BB%BA%E8%AF%81%E4%B9%A6%E6%96%87%E4%BB%B6%E5%A4%B9">创建证书文件夹</a></li>
+<li>  <a href="#%E5%AE%89%E8%A3%85%E8%87%AA%E5%8A%A8%E7%AE%A1%E7%90%86-CA-%E8%AF%81%E4%B9%A6%E8%84%9A%E6%9C%AC">安装自动管理 CA 证书脚本</a> </li>
+<li>  <a href="#%E4%BD%BF%E7%94%A8-DNSPod-API-%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6">使用 DNSPod API 申请证书</a></li>
+<li>  <a href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6">安装证书</a></li>
+<li>  <a href="#%E4%BF%AE%E6%94%B9%E6%9D%83%E9%99%90">修改权限</a></li>
 </ul>
 </li>
-<li><a href="#%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98">挂载移动硬盘</a></li>
+<li>  <a href="#%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98">挂载移动硬盘</a></li>
 <li><a href="#%E9%85%8D%E7%BD%AE-aria2">配置 aria2</a><ul>
-<li><a href="#aria2-%E7%AE%80%E4%BB%8B">aria2 简介</a></li>
-<li><a href="#aria2-%E5%AE%89%E8%A3%85">aria2 安装</a></li>
-<li><a href="#aria2-%E9%85%8D%E7%BD%AE">aria2 配置</a></li>
-<li><a href="#%E8%AE%BE%E7%BD%AE-aria2-%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8">设置 aria2 开机启动</a></li>
+<li>  <a href="#aria2-%E7%AE%80%E4%BB%8B">aria2 简介</a></li>
+<li>  <a href="#aria2-%E5%AE%89%E8%A3%85">aria2 安装</a></li>
+<li>  <a href="#aria2-%E9%85%8D%E7%BD%AE">aria2 配置</a></li>
+<li>  <a href="#%E8%AE%BE%E7%BD%AE-aria2-%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8">设置 aria2 开机启动</a></li>
 </ul>
 </li>
 <li><a href="#%E9%85%8D%E7%BD%AE-nginx">配置 nginx</a><ul>
-<li><a href="#%E6%B7%BB%E5%8A%A0-nginx-%E6%9C%8D%E5%8A%A1%E7%94%A8%E6%88%B7%E5%88%B0-certusers">添加 nginx 服务用户到 certusers</a></li>
-<li><a href="#%E5%85%B3%E9%97%AD%E9%BB%98%E8%AE%A4%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">关闭默认虚拟主机</a></li>
-<li><a href="#%E6%A0%B9%E6%8D%AE%E5%9F%9F%E5%90%8D%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">根据域名配置虚拟主机</a></li>
+<li>  <a href="#%E6%B7%BB%E5%8A%A0-nginx-%E6%9C%8D%E5%8A%A1%E7%94%A8%E6%88%B7%E5%88%B0-certusers">添加 nginx 服务用户到 certusers</a></li>
+<li>  <a href="#%E5%85%B3%E9%97%AD%E9%BB%98%E8%AE%A4%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">关闭默认虚拟主机</a></li>
+<li>  <a href="#%E6%A0%B9%E6%8D%AE%E5%9F%9F%E5%90%8D%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA">根据域名配置虚拟主机</a></li>
 </ul>
 </li>
 <li><a href="#%E9%85%8D%E7%BD%AE-aria2-webui">配置 Aria2 WebUI</a><ul>
-<li><a href="#%E8%AE%BE%E7%BD%AE-webui-aria2-%E9%A1%B5%E9%9D%A2">设置 webui-aria2 页面</a></li>
+<li>  <a href="#%E8%AE%BE%E7%BD%AE-webui-aria2-%E9%A1%B5%E9%9D%A2">设置 webui-aria2 页面</a></li>
 </ul>
 </li>
 <li><a href="#%E9%85%8D%E7%BD%AE-cloudreve">配置 cloudreve</a><ul>
-<li><a href="#%E5%AE%89%E8%A3%85-cloudreve">安装 cloudreve</a></li>
+<li>  <a href="#%E5%AE%89%E8%A3%85-cloudreve">安装 cloudreve</a></li>
 </ul>
 </li>
 <li><a href="#%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6%E6%97%B6%E8%87%AA%E5%8A%A8%E5%B0%86%E6%9C%8D%E5%8A%A1%E9%87%8D%E5%90%AF">更新证书时自动将服务重启</a><ul>
-<li><a href="#%E9%85%8D%E7%BD%AE%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD-web-%E6%9C%8D%E5%8A%A1">配置重新加载 web 服务</a></li>
+<li>  <a href="#%E9%85%8D%E7%BD%AE%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD-web-%E6%9C%8D%E5%8A%A1">配置重新加载 web 服务</a></li>
 </ul>
 </li>
 <li><a href="#%E9%85%8D%E7%BD%AE-samba-%E6%9C%8D%E5%8A%A1">配置 samba 服务</a><ul>
-<li><a href="#%E9%85%8D%E7%BD%AE-samba-%E6%9C%8D%E5%8A%A1%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95">配置 samba 服务共享文件目录</a></li>
-<li><a href="#%E8%AE%BF%E9%97%AE-samba-%E6%9C%8D%E5%8A%A1">访问 samba 服务</a></li>
+<li>  <a href="#%E9%85%8D%E7%BD%AE-samba-%E6%9C%8D%E5%8A%A1%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95">配置 samba 服务共享文件目录</a></li>
+<li>  <a href="#%E8%AE%BF%E9%97%AE-samba-%E6%9C%8D%E5%8A%A1">访问 samba 服务</a></li>
 </ul>
 </li>
-<li><a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
-<li><a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a></li>
+<li>  <a href="#%E5%90%8E%E8%AE%B0">后记</a></li>
+<li>  <a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a></li>
 </ul>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文介绍如何使用树莓派搭建个人网盘，配合 aria2 进行离线下载，通过域名访问可直接访问树莓派网盘服务，可以随时观看离线下载的电影、访问文件、上传文件、分享文件(私密分享、到期分享)等，与使用百度网盘效果一样，文件访问速度取决于你家里的宽带上行速度。注意阅读本文需要你有一定的 linux 命令行基础。</p>
 <h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><p>你需要确定你家宽带可以获取公网 IP ，可以向电信运营商客服咨询。我的宽带为光纤入户，光猫只是做桥接，使用路由器进行拨号上网，这样路由器相当于网关，树莓派运行在路由器内网中(包括你家的电脑、手机等)，然后给树莓派分配静态 IP，当需要在外网访问树莓派的服务(web 服务)，需要在路由器做端口映射(转发)。</p>
@@ -153,7 +153,7 @@
 <p>点击提交即可，其他域名厂商后台管理大同小异，可自行搜索资料进行修改。使用 dnspod 的原因是因为电信的公网 IP 会经常变，实测下来大概两天变一次，因此需要在后台运行一个脚本，每隔一段时间检测当前的公网IP，如果变化则使用 dnspod API 更新域名的解析。</p>
 <h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>在 dnspod <a target="_blank" rel="noopener" href="https://www.dnspod.cn/register">官网</a>注册账号之后，在 dnspod 控制台添加一条域名解析记录，假设你的域名为 example.top，想通过 http(s)://example.top 访问你的网站，则添加的域名解析如下：</p>
 <p><img src="./dnspod_rc1.png" alt="dnspod_rc"></p>
-<p>主机记录为 <strong>@**， 记录值为 **1.1.1.1</strong>，<strong>1.1.1.1</strong> 需要替换成你真实宽带的 IP 地址；</p>
+<p>主机记录为 <strong>@<strong>， 记录值为 <strong>1.1.1.1</strong>，</strong>1.1.1.1</strong> 需要替换成你真实宽带的 IP 地址；</p>
 <p>如果想通过 http(s)://<a target="_blank" rel="noopener" href="http://www.example.top/">www.example.top</a> 访问你的网站，则添加的域名解析如下：</p>
 <p><img src="./dnspod_rc2.png" alt="dnspod_rc"></p>
 <p>主机记录为 <strong>www</strong>，记录值为 <strong>1.1.1.1</strong>，<strong>1.1.1.1</strong> 需要替换成你真实宽带的 IP 地址。</p>
@@ -488,7 +488,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart aria2cd.service, /usr/bin/systemctl restart cloudreve.service</span><br></pre></td></tr></table></figure>
 
 <p>“NOPASSWD” 设置执行 sudo 时不需要输入密码命令选项，由冒号后给出，以 “,” 分隔开。如果保存时语法错误，visudo 提示如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/etc/sudoers.d/acme: syntax error near line 2 &lt;&lt;&lt;</span><br><span class="line">What now?</span><br><span class="line">Options are:</span><br><span class="line">  (e)dit sudoers file again</span><br><span class="line">  e(x)it without saving changes to sudoers file</span><br><span class="line">  (Q)uit and save changes to sudoers file (DANGER!)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/etc/sudoers.d/acme: syntax error near line 2 &lt;&lt;&lt;</span><br><span class="line"><span class="string">What now?</span></span><br><span class="line"><span class="string">Options are:</span></span><br><span class="line"><span class="string">  (e)dit sudoers file again</span></span><br><span class="line"><span class="string">  e(x)it without saving changes to sudoers file</span></span><br><span class="line"><span class="string">  (Q)uit and save changes to sudoers file (DANGER!)</span></span><br></pre></td></tr></table></figure>
 
 <p>接着我们输入 e 则继续编辑文件，输入 x 则退出但是不保存文件，输入 Q 则强制保存文件(<strong>强烈不推荐</strong>，这会导致 root 权限认证问题)。</p>
 <p>如果保存成功，则需要切换到 acme 用户，重新设置 acme 安装证书时执行的命令，使用以下命令切换到 acme 用户：</p>
